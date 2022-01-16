@@ -1,0 +1,2 @@
+* Class number
+* Stats page
