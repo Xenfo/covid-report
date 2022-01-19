@@ -1,0 +1,19 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
+}
+
+model PdcCase {
+  id              String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  visitorId       String
+  classroomNumber String
+
+  @@map("PDC")
+}

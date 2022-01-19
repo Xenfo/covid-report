@@ -1,20 +1,38 @@
+import FingerprintJS from '@fingerprintjs/fingerprintjs-pro';
+import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { useEffect, useState } from 'react';
 import { SpinnerCircular } from 'spinners-react';
 import * as Yup from 'yup';
 
 const CaseSchema = Yup.object().shape({
-  classroomNumber: Yup.string()
-    .required('Classroom number is required')
-    .min(3, 'Must be a valid classroom number')
-    .max(3, 'Must be a valid classroom number')
-    .matches(/^[0-9]{1,3}$/, 'Must be a valid classroom number')
+  caseIdOrRoomNumber: Yup.string()
+    .required('Case ID or classroom number is required')
+    .min(3, 'Must be a valid case ID or classroom number')
+    .max(25, 'Must be a valid case ID or classroom number')
+    .matches(
+      /(#[a-z0-9]{24})|([0-9]{3})/,
+      'Must be a valid case ID or classroom number'
+    )
 });
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
 const Home: NextPage = () => {
+  const [visitorId, setVisitorId] = useState('');
+
+  useEffect(() => {
+    void FingerprintJS.load({
+      token: process.env.NEXT_PUBLIC_FINGERPRINT_KEY!
+    })
+      .then((fp) => fp.get())
+      .then((result) => {
+        setVisitorId(result.visitorId);
+      });
+
+    console.log(visitorId);
+  }, [visitorId]);
+
   return (
     <div>
       <Head>
@@ -30,30 +48,33 @@ const Home: NextPage = () => {
         <div className="flex justify-center items-center h-screen">
           <Formik
             validateOnChange
-            initialValues={{ classroomNumber: '' }}
+            initialValues={{ caseIdOrRoomNumber: '' }}
             validationSchema={CaseSchema}
-            onSubmit={async (values) => {
-              await sleep(2000);
+            onSubmit={async ({ caseIdOrRoomNumber }) => {
+              return axios.post('/api/cases', {
+                visitorId,
+                caseIdOrRoomNumber
+              });
             }}
           >
             {({ errors, touched, isSubmitting }) => (
               <Form className="pt-6 pb-8 mb-4 w-4/5 md:w-2/5">
-                <label
-                  className="block text-gray-700 text-md font-bold mb-2"
-                  htmlFor="classroomNumber"
-                >
-                  Classroom Number
-                </label>
+                <p className="text-gray-900 text-lg font-bold">Covid Report</p>
+                <p className="mb-2 text-md text-gray-700">
+                  If your child tested positive for Covid-19, please report it
+                  in the field below. Reporting is anonymous and voluntary.
+                  Please only submit reports for your child.
+                </p>
                 <Field
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Classroom Number"
-                  name="classroomNumber"
-                  id="classroomNumber"
+                  placeholder="Case ID or Classroom Number"
+                  name="caseIdOrRoomNumber"
+                  id="caseIdOrRoomNumber"
                   type="text"
                 />
-                {errors.classroomNumber && touched.classroomNumber ? (
+                {errors.caseIdOrRoomNumber && touched.caseIdOrRoomNumber ? (
                   <p className="text-red-600 -mb-1 md:mb-2">
-                    {errors.classroomNumber}
+                    {errors.caseIdOrRoomNumber}
                   </p>
                 ) : null}
                 <div className="flex flex-col w-full items-center mt-3 space-y-1">
