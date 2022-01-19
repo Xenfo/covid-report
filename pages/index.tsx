@@ -22,15 +22,16 @@ const Home: NextPage = () => {
   const [visitorId, setVisitorId] = useState('');
 
   useEffect(() => {
-    void FingerprintJS.load({
-      token: process.env.NEXT_PUBLIC_FINGERPRINT_KEY!
-    })
-      .then((fp) => fp.get())
-      .then((result) => {
-        setVisitorId(result.visitorId);
-      });
-
-    console.log(visitorId);
+    if (process.env.NODE_ENV === 'development') setVisitorId('development');
+    else
+      void FingerprintJS.load({
+        token: process.env.NEXT_PUBLIC_FINGERPRINT_KEY!,
+        endpoint: 'https://fp.xenfo.dev'
+      })
+        .then((fp) => fp.get())
+        .then((result) => {
+          setVisitorId(result.visitorId);
+        });
   }, [visitorId]);
 
   return (
