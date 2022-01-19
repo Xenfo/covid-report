@@ -30,14 +30,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Res>) => {
         res.status(400).send({ success: false, message: 'Missing parameters' });
       else {
         const caseId = body.caseIdOrRoomNumber.slice(1);
-        const visitor =
-          body.visitorId === 'development'
-            ? { data: { visits: ['development'] } }
-            : await axios.get<{ visits: string[] }>(
-                `/visitors/${body.visitorId}?token=${process.env
-                  .FINGERPRINT_KEY!}`,
-                { baseURL: 'https://api.fpjs.io' }
-              );
+        const visitor = await axios.get<{ visits: string[] }>(
+          `/visitors/${body.visitorId}?token=${process.env.FINGERPRINT_KEY!}`,
+          { baseURL: 'https://api.fpjs.io' }
+        );
         if (visitor.data.visits.length) {
           const pdcCase = await prisma.pdcCase
             .findUnique({
