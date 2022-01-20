@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 
 interface Res {
   success: boolean;
+  caseId?: string;
   message?: string;
   cases?: { date: Date; classroomNumber: string }[];
 }
@@ -73,14 +74,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Res>) => {
             });
 
             if (cases.length < 3) {
-              await prisma.pdcCase.create({
+              const pdcCase = await prisma.pdcCase.create({
                 data: {
                   visitorId: body.visitorId,
                   classroomNumber: body.caseIdOrRoomNumber
                 }
               });
 
-              res.status(200).json({ success: true });
+              res.status(200).json({ success: true, caseId: `#${pdcCase.id}` });
             } else {
               res.status(403).send({
                 success: false,

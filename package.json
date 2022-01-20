@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@fingerprintjs/fingerprintjs-pro": "^3.5.5",
+    "@headlessui/react": "^1.4.3",
     "@prisma/client": "^3.8.1",
     "axios": "^0.24.0",
     "formik": "^2.2.9",
@@ -17,6 +18,7 @@
     "next": "12.0.8",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-hot-toast": "^2.2.0",
     "spinners-react": "^1.0.6",
     "yup": "^0.32.11"
   },
