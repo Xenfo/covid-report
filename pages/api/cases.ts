@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
 import { DateTime } from 'luxon';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const prisma = new PrismaClient();
+import prisma from '../../lib/prisma';
 
 interface Res {
   success: boolean;

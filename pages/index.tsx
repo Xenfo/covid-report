@@ -2,6 +2,7 @@ import FingerprintJS from '@fingerprintjs/fingerprintjs-pro';
 import { Dialog, Transition } from '@headlessui/react';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
+import { DateTime } from 'luxon';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Fragment, useEffect, useState } from 'react';
@@ -170,151 +171,203 @@ const CaseIDDialog: React.FC<CaseIDDialogProps> = ({
 };
 
 interface StatsDialogProps {
-  caseId: string;
-  isSubmitting: boolean;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
 
+interface Stats {
+  cases: { class: string; cases: { amount: number; when: string }[] }[];
+}
+
 const StatsDialog: React.FC<StatsDialogProps> = ({
-  caseId,
-  isSubmitting,
   isOpen,
   setIsOpen
 }: StatsDialogProps) => {
-  const [isCopying, setIsCopying] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    setTimeout(() => setIsCopying(false), 2000);
-  }, [isCopying]);
+    const populateStats = async () => {
+      const cases = await axios
+        .get<{
+          cases: {
+            date: string;
+            classroomNumber: string;
+          }[];
+        }>('/api/cases')
+        .catch(() => {
+          setIsOpen(false);
+          toast.error('Failed to create case');
+          return null;
+        });
+
+      if (!cases) return;
+
+      const stats: Stats = { cases: [] };
+      for (const { date, classroomNumber } of cases.data.cases) {
+        const luxonDate = DateTime.fromJSDate(new Date(date));
+        const when = DateTime.now()
+          .diff(luxonDate, ['months', 'days', 'hours', 'minutes', 'seconds'])
+          .toObject();
+
+        switch (when.days!) {
+          case 0: {
+            const term = 'less than 1 day ago';
+
+            const classroomIndex = stats.cases.findIndex(
+              (c) => c.class === classroomNumber
+            );
+
+            if (classroomIndex >= 0) {
+              const classroom = stats.cases[classroomIndex];
+              const dateIndex = classroom.cases.findIndex(
+                (c) => c.when === term
+              );
+              if (date) {
+                classroom.cases[dateIndex] = {
+                  ...classroom.cases[dateIndex],
+                  amount: classroom.cases[dateIndex].amount + 1
+                };
+              }
+            }
+
+            break;
+          }
+        }
+      }
+    };
+
+    if (isOpen) void populateStats();
+  }, [isOpen, setIsOpen]);
 
   return (
-    <Transition appear show={isOpen} as={Fragment}>
-      <Dialog
-        as="div"
-        className="fixed inset-0 z-10 overflow-y-auto"
-        onClose={() => setIsOpen(false)}
-      >
-        <div className="min-h-screen px-4 text-center">
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <Dialog.Overlay className="fixed inset-0" />
-          </Transition.Child>
+    <div></div>
+    // <Transition appear show={isOpen} as={Fragment}>
+    //   <Dialog
+    //     as="div"
+    //     className="fixed inset-0 z-10 overflow-y-auto"
+    //     onClose={() => setIsOpen(false)}
+    //   >
+    //     <div className="min-h-screen px-4 text-center">
+    //       <Transition.Child
+    //         as={Fragment}
+    //         enter="ease-out duration-300"
+    //         enterFrom="opacity-0"
+    //         enterTo="opacity-100"
+    //         leave="ease-in duration-200"
+    //         leaveFrom="opacity-100"
+    //         leaveTo="opacity-0"
+    //       >
+    //         <Dialog.Overlay className="fixed inset-0" />
+    //       </Transition.Child>
 
-          <span
-            className="inline-block h-screen align-middle"
-            aria-hidden="true"
-          >
-            &#8203;
-          </span>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0 scale-95"
-            enterTo="opacity-100 scale-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100 scale-100"
-            leaveTo="opacity-0 scale-95"
-          >
-            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl rounded-2xl">
-              <Dialog.Title
-                as="h3"
-                className="text-lg font-medium leading-6 text-gray-900 text-center"
-              >
-                Case ID
-              </Dialog.Title>
+    //       <span
+    //         className="inline-block h-screen align-middle"
+    //         aria-hidden="true"
+    //       >
+    //         &#8203;
+    //       </span>
+    //       <Transition.Child
+    //         as={Fragment}
+    //         enter="ease-out duration-300"
+    //         enterFrom="opacity-0 scale-95"
+    //         enterTo="opacity-100 scale-100"
+    //         leave="ease-in duration-200"
+    //         leaveFrom="opacity-100 scale-100"
+    //         leaveTo="opacity-0 scale-95"
+    //       >
+    //         <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl rounded-2xl">
+    //           <Dialog.Title
+    //             as="h3"
+    //             className="text-lg font-medium leading-6 text-gray-900 text-center"
+    //           >
+    //             Case ID
+    //           </Dialog.Title>
 
-              {isSubmitting || caseId.length === 0 ? (
-                <div className="mt-4 flex justify-center">
-                  <SpinnerCircular
-                    className="inline-block"
-                    thickness={180}
-                    color="#2563EB"
-                    secondaryColor="rgba(0, 0, 0, 0.44)"
-                  />
-                </div>
-              ) : (
-                <>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Save this case ID to your device so you can access it
-                      later.
-                    </p>
-                  </div>
+    //           {isSubmitting || caseId.length === 0 ? (
+    //             <div className="mt-4 flex justify-center">
+    //               <SpinnerCircular
+    //                 className="inline-block"
+    //                 thickness={180}
+    //                 color="#2563EB"
+    //                 secondaryColor="rgba(0, 0, 0, 0.44)"
+    //               />
+    //             </div>
+    //           ) : (
+    //             <>
+    //               <div className="mt-2">
+    //                 <p className="text-sm text-gray-500">
+    //                   Save this case ID to your device so you can access it
+    //                   later.
+    //                 </p>
+    //               </div>
 
-                  <div className="flex justify-center">
-                    <div className="mt-4 p-2 px-3 mx-12 inline-flex justify-center items-center flex-row rounded-md bg-gray-200">
-                      <p className="mr-2 text-md font-medium">{caseId}</p>
-                      <button
-                        className="p-[2px] rounded-md shadow-md border-2 border-opacity-70 border-gray-900"
-                        onClick={async () => {
-                          await navigator.clipboard
-                            .writeText(caseId)
-                            .catch(() => {
-                              return toast.error('Failed to copy to clipboard');
-                            });
-                          toast.success('Successfully copied case ID');
-                          setIsCopying(true);
-                        }}
-                      >
-                        {isCopying ? (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6 text-green-600"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
-                            />
-                          </svg>
-                        ) : (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6 text-opacity-70 text-gray-900"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                            />
-                          </svg>
-                        )}
-                      </button>
-                    </div>
-                  </div>
+    //               <div className="flex justify-center">
+    //                 <div className="mt-4 p-2 px-3 mx-12 inline-flex justify-center items-center flex-row rounded-md bg-gray-200">
+    //                   <p className="mr-2 text-md font-medium">{caseId}</p>
+    //                   <button
+    //                     className="p-[2px] rounded-md shadow-md border-2 border-opacity-70 border-gray-900"
+    //                     onClick={async () => {
+    //                       await navigator.clipboard
+    //                         .writeText(caseId)
+    //                         .catch(() => {
+    //                           return toast.error('Failed to copy to clipboard');
+    //                         });
+    //                       toast.success('Successfully copied case ID');
+    //                       setIsCopying(true);
+    //                     }}
+    //                   >
+    //                     {isCopying ? (
+    //                       <svg
+    //                         xmlns="http://www.w3.org/2000/svg"
+    //                         className="h-6 w-6 text-green-600"
+    //                         fill="none"
+    //                         viewBox="0 0 24 24"
+    //                         stroke="currentColor"
+    //                       >
+    //                         <path
+    //                           strokeLinecap="round"
+    //                           strokeLinejoin="round"
+    //                           strokeWidth="2"
+    //                           d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+    //                         />
+    //                       </svg>
+    //                     ) : (
+    //                       <svg
+    //                         xmlns="http://www.w3.org/2000/svg"
+    //                         className="h-6 w-6 text-opacity-70 text-gray-900"
+    //                         fill="none"
+    //                         viewBox="0 0 24 24"
+    //                         stroke="currentColor"
+    //                       >
+    //                         <path
+    //                           strokeLinecap="round"
+    //                           strokeLinejoin="round"
+    //                           strokeWidth={2}
+    //                           d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+    //                         />
+    //                       </svg>
+    //                     )}
+    //                   </button>
+    //                 </div>
+    //               </div>
 
-                  <div className="mt-4">
-                    <button
-                      className="bg-gray-900 hover:bg-gray-800 disabled:bg-gray-800 text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
-                      type="button"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Got it, thanks!
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </Transition.Child>
-        </div>
-      </Dialog>
-    </Transition>
+    //               <div className="mt-4">
+    //                 <button
+    //                   className="bg-gray-900 hover:bg-gray-800 disabled:bg-gray-800 text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
+    //                   type="button"
+    //                   onClick={() => setIsOpen(false)}
+    //                 >
+    //                   Got it, thanks!
+    //                 </button>
+    //               </div>
+    //             </>
+    //           )}
+    //         </div>
+    //       </Transition.Child>
+    //     </div>
+    //   </Dialog>
+    // </Transition>
   );
 };
 
@@ -322,6 +375,7 @@ const Home: NextPage = () => {
   const [caseId, setCaseId] = useState('');
   const [visitorId, setVisitorId] = useState('');
   const [isOpenCase, setIsOpenCase] = useState(false);
+  const [isOpenStats, setIsOpenStats] = useState(false);
 
   useEffect(() => {
     void FingerprintJS.load({
@@ -332,7 +386,7 @@ const Home: NextPage = () => {
       .then((result) => {
         setVisitorId(result.visitorId);
       });
-  }, [visitorId]);
+  }, []);
 
   return (
     <div>
@@ -430,6 +484,7 @@ const Home: NextPage = () => {
                     <button
                       className="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
                       type="button"
+                      onClick={() => setIsOpenStats(true)}
                     >
                       Stats
                     </button>
@@ -455,12 +510,7 @@ const Home: NextPage = () => {
                   isOpen={isOpenCase}
                   setIsOpen={setIsOpenCase}
                 />
-                <StatsDialog
-                  caseId={caseId}
-                  isSubmitting={isSubmitting}
-                  isOpen={isOpenCase}
-                  setIsOpen={setIsOpenCase}
-                />
+                <StatsDialog isOpen={isOpenStats} setIsOpen={setIsOpenStats} />
               </>
             )}
           </Formik>
