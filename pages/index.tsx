@@ -22,15 +22,17 @@ const CaseSchema = Yup.object().shape({
 });
 
 interface CaseIDDialogProps {
-  caseId: string;
   isSubmitting: boolean;
+  caseId: string;
+  setCaseId: (caseId: string) => void;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
 
 const CaseIDDialog: React.FC<CaseIDDialogProps> = ({
-  caseId,
   isSubmitting,
+  caseId,
+  setCaseId,
   isOpen,
   setIsOpen
 }: CaseIDDialogProps) => {
@@ -40,12 +42,17 @@ const CaseIDDialog: React.FC<CaseIDDialogProps> = ({
     setTimeout(() => setIsCopying(false), 2000);
   }, [isCopying]);
 
+  const close = () => {
+    setCaseId('');
+    setIsOpen(false);
+  };
+
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-10 overflow-y-auto"
-        onClose={() => setIsOpen(false)}
+        onClose={() => close()}
       >
         <div className="min-h-screen px-4 text-center">
           <Transition.Child
@@ -155,7 +162,7 @@ const CaseIDDialog: React.FC<CaseIDDialogProps> = ({
                     <button
                       className="bg-gray-900 hover:bg-gray-800 disabled:bg-gray-800 text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
                       type="button"
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => close()}
                     >
                       Got it, thanks!
                     </button>
@@ -536,8 +543,9 @@ const Home: NextPage = () => {
                 </Form>
 
                 <CaseIDDialog
-                  caseId={caseId}
                   isSubmitting={isSubmitting}
+                  caseId={caseId}
+                  setCaseId={setCaseId}
                   isOpen={isOpenCase}
                   setIsOpen={setIsOpenCase}
                 />
