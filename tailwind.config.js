@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 module.exports = {
-  content: ['./pages/**/*.tsx', './components/**/*.tsx'],
+  content: ['./src/pages/**/*.tsx', './src/components/**/*.tsx'],
   theme: {
     extend: {}
   },
