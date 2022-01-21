@@ -195,9 +195,9 @@ const StatsDialog: React.FC<StatsDialogProps> = ({
   const [stats, setStats] = useState<Stats>({ cases: [] });
 
   useEffect(() => {
-    setIsLoading(true);
-
     const populateStats = async () => {
+      setIsLoading(true);
+
       const cases = await axios
         .get<{
           cases: {
