@@ -16,7 +16,7 @@ const CaseSchema = Yup.object().shape({
     .min(3, 'Must be a valid case ID or classroom number')
     .max(25, 'Must be a valid case ID or classroom number')
     .matches(
-      /^(#[a-z0-9]{24})|([0-9]{3})$/,
+      /(^#[a-z0-9]{24}$)|(^[0-9]{3}$)/,
       'Must be a valid case ID or classroom number'
     )
 });
