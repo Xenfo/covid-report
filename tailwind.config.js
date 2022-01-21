@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 module.exports = {
   content: ['./pages/**/*.tsx', './components/**/*.tsx'],
   theme: {
     extend: {}
   },
-  plugins: []
+  plugins: [require('tailwind-scrollbar')]
 };
