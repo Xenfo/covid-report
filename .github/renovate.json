@@ -22,5 +22,6 @@
     "group:recommended",
     "workarounds:all"
   ],
-  "baseBranches": ["trunk"]
+  "baseBranches": ["trunk"],
+  "automergeStrategy": "squash"
 }
