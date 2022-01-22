@@ -13,16 +13,38 @@ interface Res {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Res>) => {
   try {
-    if (req.method !== 'GET' && req.method !== 'POST') {
-      return res
-        .status(405)
-        .send({ success: false, message: 'Only POST requests allowed' });
-    }
+    if (req.method !== 'GET' && req.method !== 'POST')
+      return res.status(405).send({
+        success: false,
+        message: 'Only GET and POST requests allowed'
+      });
 
     await prisma.$connect();
 
+    await prisma.cases.updateMany({
+      where: {
+        active: true,
+        secondActive: false,
+        createdAt: {
+          lt: DateTime.now().minus({ days: 5 }).toJSDate()
+        }
+      },
+      data: { active: false }
+    });
+    await prisma.cases.updateMany({
+      where: {
+        active: true,
+        secondActive: true,
+        createdAt: {
+          lt: DateTime.now().minus({ days: 10 }).toJSDate()
+        }
+      },
+      data: { active: false }
+    });
+
     if (req.method === 'POST') {
       const body = await (req.body as Promise<{
+        school: string;
         visitorId: string;
         caseIdOrRoomNumber: string;
       }>);
@@ -35,17 +57,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Res>) => {
           { baseURL: 'https://api.fpjs.io' }
         );
         if (visitor.data.visits.length) {
-          const pdcCase = await prisma.pdcCase
+          const schoolCase = await prisma.cases
             .findUnique({
               where: { id: caseId }
             })
             .catch(() => null);
 
-          if (pdcCase) {
-            const preExpireDate = DateTime.fromJSDate(pdcCase.createdAt)
+          if (schoolCase) {
+            const preExpireDate = DateTime.fromJSDate(schoolCase.createdAt)
               .plus({ days: 5 })
               .toMillis();
-            const expireDate = DateTime.fromJSDate(pdcCase.createdAt)
+            const expireDate = DateTime.fromJSDate(schoolCase.createdAt)
               .plus({ days: 6 })
               .toMillis();
 
@@ -55,32 +77,47 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Res>) => {
                 message:
                   'This case is not older than 5 days. Please wait a full 5 days before renewing the case.'
               });
-            } else if (expireDate < new Date().getTime()) {
+            } else if (
+              schoolCase.secondActive ||
+              expireDate < new Date().getTime()
+            ) {
               res.status(400).send({
                 success: false,
                 message:
                   'This case is no longer valid. Please submit a classroom number instead.'
               });
             } else {
-              await prisma.pdcCase.update({
+              await prisma.cases.update({
                 where: { id: caseId },
-                data: { active: true }
+                data: { active: true, secondActive: true }
               });
+              res.status(200).send({ success: true, caseId: '' });
             }
           } else {
-            const cases = await prisma.pdcCase.findMany({
-              where: { active: true, visitorId: body.visitorId }
+            let cases = await prisma.cases.findMany({
+              where: { visitorId: body.visitorId }
+            });
+
+            cases = cases.filter((c) => {
+              const expireDate = DateTime.fromJSDate(c.createdAt)
+                .plus({ days: 10 })
+                .toMillis();
+
+              return expireDate > new Date().getTime();
             });
 
             if (cases.length < 3) {
-              const pdcCase = await prisma.pdcCase.create({
+              const schoolCase = await prisma.cases.create({
                 data: {
+                  school: body.school,
                   visitorId: body.visitorId,
                   classroomNumber: body.caseIdOrRoomNumber
                 }
               });
 
-              res.status(200).json({ success: true, caseId: `#${pdcCase.id}` });
+              res
+                .status(200)
+                .json({ success: true, caseId: `#${schoolCase.id}` });
             } else {
               res.status(403).send({
                 success: false,
@@ -92,28 +129,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Res>) => {
           res.status(400).send({ success: false, message: 'Invalid visitor' });
       }
     } else {
-      const cases = await prisma.pdcCase.findMany({ where: { active: true } });
-
-      const filteredCases = cases
-        .map((c) => {
-          const expireDate = DateTime.fromJSDate(c.createdAt)
-            .plus({ days: 5 })
-            .toMillis();
-
-          if (expireDate > new Date().getTime()) return c;
-
-          void prisma.pdcCase.update({
-            where: { id: c.id },
-            data: { active: false }
-          });
-          c.active = false;
-          return c;
-        })
-        .filter((c) => c.active);
+      const cases = await prisma.cases.findMany({ where: { active: true } });
+      const filteredCases = cases.filter((c) => c.active);
 
       res.status(200).json({
         success: true,
         cases: filteredCases.map((c) => ({
+          school: c.school,
           date: c.createdAt,
           classroomNumber: c.classroomNumber
         }))

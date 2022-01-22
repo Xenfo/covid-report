@@ -1,0 +1,7 @@
+[
+  {
+    "alias": "PDC",
+    "name": "Pierre De Coubertin",
+    "classroomRegex": "[0-9]{3}"
+  }
+]
