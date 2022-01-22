@@ -8,12 +8,14 @@ generator client {
   previewFeatures = ["mongoDb"]
 }
 
-model PdcCase {
+model Cases {
   id              String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  active          Boolean  @default(true)
   createdAt       DateTime @default(now())
+  active          Boolean  @default(true)
+  secondActive    Boolean  @default(false)
+  school          String
   visitorId       String
   classroomNumber String
 
-  @@map("PDC")
+  @@map("cases")
 }

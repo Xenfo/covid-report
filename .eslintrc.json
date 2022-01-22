@@ -6,6 +6,7 @@
     "next/core-web-vitals",
     "plugin:prettier/recommended"
   ],
+  "ignorePatterns": ["*.d.ts"],
   "rules": {
     "react/jsx-filename-extension": [2, { "extensions": [".tsx"] }],
     "@typescript-eslint/no-unused-vars": [

@@ -4,21 +4,15 @@ import { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircular } from 'spinners-react';
 
-interface CaseIDDialogProps {
-  isSubmitting: boolean;
-  caseId: string;
-  setCaseId: (caseId: string) => void;
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-}
+import { ICaseIDDialogProps } from '../typings';
 
-const CaseIDDialog: React.FC<CaseIDDialogProps> = ({
+const CaseIDDialog: React.FC<ICaseIDDialogProps> = ({
   isSubmitting,
   caseId,
   setCaseId,
   isOpen,
   setIsOpen
-}: CaseIDDialogProps) => {
+}: ICaseIDDialogProps) => {
   const [isCopying, setIsCopying] = useState(false);
 
   useEffect(() => {
