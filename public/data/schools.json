@@ -1,7 +1,7 @@
 [
   {
     "alias": "PDC",
-    "name": "Pierre De Coubertin",
-    "classroomRegex": "[0-9]{3}"
+    "name": "Pierre de Coubertin Elementary School",
+    "classroomRegex": "(^[0-9]{3}$)"
   }
 ]

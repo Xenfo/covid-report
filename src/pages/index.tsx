@@ -5,13 +5,13 @@ import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircular } from 'spinners-react';
+import * as Yup from 'yup';
 
 import CaseIDDialog from '../components/CaseIDDialog';
 import StatsDialog from '../components/StatsDialog';
-import CaseSchema from '../schemas/CaseSchema';
 import { ISchool } from '../typings';
 
 const Home: NextPage = () => {
@@ -25,16 +25,6 @@ const Home: NextPage = () => {
     alias: '',
     classroomRegex: ''
   });
-
-  const schema = useCallback(() => {
-    CaseSchema.fields.caseIdOrRoomNumber =
-      CaseSchema.fields.caseIdOrRoomNumber.matches(
-        new RegExp(`(^#[a-z0-9]{24}$)|(^${selectedSchool.classroomRegex}$)`),
-        'Must be a valid case ID or classroom number'
-      );
-
-    return CaseSchema;
-  }, [selectedSchool]);
 
   useEffect(() => {
     const init = async () => {
@@ -75,7 +65,22 @@ const Home: NextPage = () => {
           <Formik
             validateOnChange
             initialValues={{ caseIdOrRoomNumber: '' }}
-            validationSchema={schema}
+            validationSchema={() =>
+              Yup.lazy(() => {
+                return Yup.object().shape({
+                  caseIdOrRoomNumber: Yup.string()
+                    .required('Case ID or classroom number is required')
+                    .min(3, 'Must be a valid case ID or classroom number')
+                    .max(25, 'Must be a valid case ID or classroom number')
+                    .matches(
+                      new RegExp(
+                        `(^#[a-z0-9]{24}$)|${selectedSchool.classroomRegex}`
+                      ),
+                      'Must be a valid case ID or classroom number'
+                    )
+                });
+              })
+            }
             onSubmit={async ({ caseIdOrRoomNumber }) => {
               setIsOpenCase(true);
 
@@ -116,14 +121,49 @@ const Home: NextPage = () => {
               <>
                 <Form className="pt-6 pb-8 mb-4 w-4/5 md:w-2/5">
                   <p className="text-gray-900 text-lg font-bold">
-                    Covid Report
+                    Covid-19 Tracker for Schools
                   </p>
                   <p className="mb-2 text-md text-gray-700">
-                    If your child tested positive for Covid-19, please report it
-                    in the field below. Reporting is anonymous and voluntary.
-                    Please only submit reports for your child. If you already
-                    have a case ID and your child tests positive after 5 days,
-                    resubmit the case ID.
+                    The Quebec government is currently not allowing school
+                    administrators to notify parents and guardians of Covid-19
+                    cases at school. This website is a tool for EMSB parents to
+                    self-report whether their child tested positive for Covid-19
+                    and to allow parents to track the number of cases at their
+                    child&apos;s school.
+                    <br />
+                    <p className="mt-2">
+                      If your child tested positive for Covid-19, please report
+                      it in the field below.{' '}
+                      <b>Reporting is anonymous and voluntary.</b> Please only
+                      submit reports for your own child. Cases are assumed to be
+                      resolved after 5 days. However, if you already have a case
+                      ID and your child tests positive again after 5 days,
+                      report the case using the case ID.
+                    </p>
+                    <p className="mt-2">
+                      We are counting on your honesty in submitting cases,
+                      because we have no means to validate whether a case is
+                      real. The tool imposes a limit to the number of cases than
+                      can be entered over a 10-day period.
+                    </p>
+                    <p className="mt-2">
+                      If you wish to have your school added to the tracker,
+                      please send an email to:{' '}
+                      <a
+                        href="mailto:covid-report@xenfo.dev"
+                        className="text-blue-600 underline underline-offset-4"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        covid-report@xenfo.dev
+                      </a>
+                      .
+                    </p>
+                    <p className="mt-2">
+                      <b>Disclaimer:</b> This tool is not affiliated with, nor
+                      endorsed by, the English Montreal School Board. This tool
+                      was developed for parents, at the request of parents.
+                    </p>
                   </p>
                   <Listbox value={selectedSchool} onChange={setSelectedSchool}>
                     <div className="relative mt-1">
@@ -229,7 +269,7 @@ const Home: NextPage = () => {
                     <p className="mt-1 md:mt-2 text-gray-700">
                       &copy; Made by{' '}
                       <a
-                        href="https://github.com/Xenfo"
+                        href="https://xenfo.dev"
                         className="text-blue-600 underline underline-offset-4"
                         target="_blank"
                         rel="noopener noreferrer"
