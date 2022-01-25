@@ -59,10 +59,10 @@ const CaseIDDialog: React.FC<ICaseIDDialogProps> = ({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl rounded-2xl">
+            <div className="my-8 inline-block w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-2xl transition-all">
               <Dialog.Title
                 as="h3"
-                className="text-lg font-medium leading-6 text-gray-900 text-center"
+                className="text-center text-lg font-medium leading-6 text-gray-900"
               >
                 Case ID
               </Dialog.Title>
@@ -86,10 +86,10 @@ const CaseIDDialog: React.FC<ICaseIDDialogProps> = ({
                   </div>
 
                   <div className="flex justify-center">
-                    <div className="mt-4 p-2 px-3 mx-12 inline-flex justify-center items-center flex-row rounded-md bg-gray-200">
-                      <p className="mr-2 text-md font-medium">{caseId}</p>
+                    <div className="mx-12 mt-4 inline-flex flex-row items-center justify-center rounded-md bg-gray-200 p-2 px-3">
+                      <p className="text-md mr-2 font-medium">{caseId}</p>
                       <button
-                        className="p-[2px] rounded-md shadow-md border-2 border-opacity-70 border-gray-900"
+                        className="rounded-md border-2 border-gray-900 border-opacity-70 p-[2px] shadow-md"
                         onClick={async () => {
                           await navigator.clipboard
                             .writeText(caseId)
@@ -103,7 +103,7 @@ const CaseIDDialog: React.FC<ICaseIDDialogProps> = ({
                         {isCopying ? (
                           <ClipboardCheckIcon className="h-6 w-6 text-green-600" />
                         ) : (
-                          <ClipboardIcon className="h-6 w-6 text-opacity-70 text-gray-900" />
+                          <ClipboardIcon className="h-6 w-6 text-gray-900 text-opacity-70" />
                         )}
                       </button>
                     </div>
@@ -111,7 +111,7 @@ const CaseIDDialog: React.FC<ICaseIDDialogProps> = ({
 
                   <div className="mt-4">
                     <button
-                      className="bg-gray-900 hover:bg-gray-800 disabled:bg-gray-800 text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
+                      className="focus:shadow-outline w-full rounded bg-gray-900 py-2 px-4 font-bold text-white hover:bg-gray-800 focus:outline-none disabled:bg-gray-800"
                       type="button"
                       onClick={() => close()}
                     >

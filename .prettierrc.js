@@ -12,5 +12,9 @@ module.exports = {
     'classProperties',
     'decorators-legacy'
   ],
-  plugins: [require.resolve('@trivago/prettier-plugin-sort-imports')]
+  tailwindConfig: './tailwind.config.js',
+  plugins: [
+    require.resolve('@trivago/prettier-plugin-sort-imports'),
+    require.resolve('prettier-plugin-tailwindcss')
+  ]
 };
