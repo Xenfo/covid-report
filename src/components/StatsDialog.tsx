@@ -23,7 +23,8 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
   const [selectedSchool, setSelectedSchool] = useState<ISchool>({
     name: 'Select a school',
     alias: '',
-    classroomRegex: ''
+    classroomRegex: '',
+    min: 0
   });
 
   const stats = useMemo(() => {
@@ -151,10 +152,10 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl rounded-2xl">
+            <div className="my-8 inline-block w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-2xl transition-all">
               <Dialog.Title
                 as="h3"
-                className="text-lg font-medium leading-6 text-gray-900 text-center"
+                className="text-center text-lg font-medium leading-6 text-gray-900"
               >
                 Stats - {totalCases} total {totalCases === 1 ? 'case' : 'cases'}
               </Dialog.Title>
@@ -170,19 +171,19 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
                 </div>
               ) : (
                 <>
-                  <div className="w-full mt-4 bg-white">
+                  <div className="mt-4 w-full bg-white">
                     <Listbox
                       value={selectedSchool}
                       onChange={setSelectedSchool}
                     >
                       <div className="relative mt-1">
-                        <Listbox.Button className="shadow appearance-none border relative w-full py-2 pl-3 pr-10 text-left bg-white rounded cursor-default focus:outline-none focus:shadow-outline">
-                          <span className="block truncate text-gray-700 font-normal">
+                        <Listbox.Button className="focus:shadow-outline relative w-full cursor-default appearance-none rounded border bg-white py-2 pl-3 pr-10 text-left shadow focus:outline-none">
+                          <span className="block truncate font-normal text-gray-700">
                             {selectedSchool.name}
                           </span>
-                          <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                             <SelectorIcon
-                              className="w-5 h-5 text-gray-400"
+                              className="h-5 w-5 text-gray-400"
                               aria-hidden="true"
                             />
                           </span>
@@ -193,16 +194,16 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
                           leaveFrom="opacity-100"
                           leaveTo="opacity-0"
                         >
-                          <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 scrollbar scrollbar-thin scrollbar-track-gray-300 scrollbar-thumb-gray-700 focus:outline-none">
                             {schools.map((school, i) => (
                               <Listbox.Option
                                 key={i}
                                 className={({ active }) =>
                                   `${
                                     active
-                                      ? 'text-blue-900 bg-blue-100'
+                                      ? 'bg-blue-100 text-blue-900'
                                       : 'text-gray-700'
-                                  } cursor-default select-none relative py-2 pl-10 pr-4`
+                                  } relative cursor-default select-none py-2 pl-10 pr-4`
                                 }
                                 value={school}
                               >
@@ -216,9 +217,9 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
                                       {school.name}
                                     </span>
                                     {selected ? (
-                                      <span className="text-blue-600 absolute inset-y-0 left-0 flex items-center pl-3">
+                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-600">
                                         <CheckIcon
-                                          className="w-6 h-6"
+                                          className="h-6 w-6"
                                           aria-hidden="true"
                                         />
                                       </span>
@@ -244,12 +245,12 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
                         >
                           {({ open }) => (
                             <>
-                              <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-white bg-gray-900 rounded-lg hover:bg-gray-800">
+                              <Disclosure.Button className="flex w-full justify-between rounded-lg bg-gray-900 px-4 py-2 text-left text-sm font-medium text-white hover:bg-gray-800">
                                 <span>{c.class}</span>
                                 <ChevronUpIcon
                                   className={`${
-                                    open ? 'transform rotate-180' : ''
-                                  } w-5 h-5 text-white`}
+                                    open ? 'rotate-180 transform' : ''
+                                  } h-5 w-5 text-white`}
                                 />
                               </Disclosure.Button>
                               <Transition
@@ -262,7 +263,7 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
                                 leaveTo="transform scale-95 opacity-0"
                               >
                                 <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-900">
-                                  <table className="table-fixed w-full">
+                                  <table className="w-full table-fixed">
                                     <thead>
                                       <tr>
                                         <th>Cases</th>
@@ -289,7 +290,7 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
 
                   <div className="mt-4">
                     <button
-                      className="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 w-full rounded focus:outline-none focus:shadow-outline"
+                      className="focus:shadow-outline w-full rounded bg-gray-900 py-2 px-4 font-bold text-white hover:bg-gray-800 focus:outline-none"
                       type="button"
                       onClick={() => setIsOpen(false)}
                     >
