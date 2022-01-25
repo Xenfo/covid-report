@@ -137,11 +137,11 @@ const Home: NextPage = () => {
                       their school.
                     </p>
                     <p className="mt-2">
-                      Please report your child&apos;s positive result in the
-                      field below. <b>Reporting is anonymous and voluntary.</b>{' '}
-                      Please only submit reports for your own child. If you have
-                      a case ID and your child tests positive again after 5
-                      days, report the case using the case ID.{' '}
+                      Please report a positive result in the field below for
+                      your own child only.{' '}
+                      <b>Reporting is anonymous and voluntary.</b> If you have a
+                      case ID and your child tests positive again after 5 days,
+                      report the case using the case ID.{' '}
                       <button
                         className="font-normal text-blue-600 underline underline-offset-4"
                         type="button"
