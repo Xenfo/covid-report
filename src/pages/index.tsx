@@ -25,6 +25,7 @@ const Home: NextPage = () => {
   const [selectedSchool, setSelectedSchool] = useState<ISchool>({
     name: 'Select a school',
     alias: '',
+    placeholder: '',
     classroomRegex: '',
     min: 0
   });
@@ -218,7 +219,7 @@ const Home: NextPage = () => {
                   </Listbox>
                   <Field
                     className="focus:shadow-outline mt-2 w-full appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
-                    placeholder="Case ID or Classroom Number"
+                    placeholder={`Case ID or ${selectedSchool.placeholder}`}
                     name="caseIdOrRoomNumber"
                     id="caseIdOrRoomNumber"
                     type="text"
