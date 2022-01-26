@@ -23,6 +23,7 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
   const [selectedSchool, setSelectedSchool] = useState<ISchool>({
     name: 'Select a school',
     alias: '',
+    placeholder: '',
     classroomRegex: '',
     min: 0
   });
