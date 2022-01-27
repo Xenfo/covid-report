@@ -27,6 +27,7 @@ const Home: NextPage = () => {
     alias: '',
     placeholder: '',
     classroomRegex: '',
+    isByGrade: false,
     min: 0
   });
 
