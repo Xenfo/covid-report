@@ -4,6 +4,7 @@
     "name": "Pierre de Coubertin Elementary School",
     "placeholder": "Classroom Number",
     "classroomRegex": "(^PK[1-2]$)|(^K0[1-3]$)|(^[1-6]0[1-3]$)",
+    "isByGrade": false,
     "min": 3
   },
   {
@@ -11,6 +12,7 @@
     "name": "Pierre Elliott Trudeau Elementary School",
     "placeholder": "Classroom Number",
     "classroomRegex": "(^[1-2][0-1][0-9]$)",
+    "isByGrade": false,
     "min": 3
   },
   {
@@ -18,6 +20,7 @@
     "name": "Dunrae Gardens Elementary School",
     "placeholder": "Classroom Number",
     "classroomRegex": "(^[1-3][0-7]$)",
+    "isByGrade": false,
     "min": 2
   },
   {
@@ -25,6 +28,7 @@
     "name": "East Hill Elementary School",
     "placeholder": "Classroom Number",
     "classroomRegex": "(^1/2C$)|(^[1-6KP][A-D]$)",
+    "isByGrade": false,
     "min": 2
   },
   {
@@ -32,6 +36,7 @@
     "name": "Dante Elementary School",
     "placeholder": "Classroom Number",
     "classroomRegex": "(^K-01[1-2]$)|(^1S2$)|(^[0-6]0[1-3]$)",
+    "isByGrade": false,
     "min": 3
   },
   {
@@ -39,6 +44,7 @@
     "name": "Cedarcrest Elementary School",
     "placeholder": "Classroom Number",
     "classroomRegex": "(^K[A-B]$)|(^[1-6][A-C]$)|(^3C4$)|(^5C/6$)",
+    "isByGrade": false,
     "min": 2
   },
   {
@@ -46,6 +52,7 @@
     "name": "Carlyle Elementary School",
     "placeholder": "Classroom Number",
     "classroomRegex": "(^B-[0-1][1-6]$)|(^[1-2][0-1][0-8]$)",
+    "isByGrade": false,
     "min": 3
   },
   {
@@ -53,6 +60,7 @@
     "name": "Bancroft Elementary School",
     "placeholder": "Classroom Number",
     "classroomRegex": "(^Pre-K[1-2]$)|(^K[1-3]$)|(^[1-4][A-C]$)|(^[5-6]$)|(^3\/4$)|(^5\/6$)",
+    "isByGrade": false,
     "min": 1
   },
   {
@@ -60,6 +68,7 @@
     "name": "Westmount Park School",
     "placeholder": "Classroom Number",
     "classroomRegex": "(^[0-9]{3}$)",
+    "isByGrade": false,
     "min": 3
   },
   {
@@ -67,6 +76,7 @@
     "name": "Mackay Centre School",
     "placeholder": "Grade Level",
     "classroomRegex": "(^Pre-K$)|(^K$)|(^[1-6]$)",
+    "isByGrade": true,
     "min": 1
   }
 ]
