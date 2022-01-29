@@ -4,7 +4,6 @@ interface IDialog {
 }
 
 export interface IStats {
-  isByGrade: boolean;
   cases: { class: string; cases: { amount: number; when: string }[] }[];
 }
 
@@ -19,7 +18,7 @@ export interface ISchool {
   alias: string;
   placeholder: string;
   classroomRegex: string;
-  isByGrade: boolean;
+  type: 'normal' | 'grade' | 'room';
   min: number;
 }
 
