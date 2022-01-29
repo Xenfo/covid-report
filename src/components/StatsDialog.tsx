@@ -25,12 +25,12 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
     alias: '',
     placeholder: '',
     classroomRegex: '',
-    isByGrade: false,
+    type: 'normal',
     min: 0
   });
 
   const stats = useMemo(() => {
-    const stats: IStats = { isByGrade: selectedSchool.isByGrade, cases: [] };
+    const stats: IStats = { cases: [] };
     for (const { date, classroomNumber } of cases.filter(
       (c) => c.school === selectedSchool.alias
     )) {
@@ -249,11 +249,13 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
                             <>
                               <Disclosure.Button className="flex w-full justify-between rounded-lg bg-gray-900 px-4 py-2 text-left text-sm font-medium text-white hover:bg-gray-800">
                                 <span>
-                                  {stats.isByGrade && c.class.length === 1
+                                  {selectedSchool.type === 'normal'
+                                    ? c.class
+                                    : selectedSchool.type === 'grade'
                                     ? c.class === 'K'
                                       ? 'Kindergarten'
                                       : `Grade ${c.class}`
-                                    : c.class}
+                                    : `Room ${c.class}`}
                                 </span>
                                 <ChevronUpIcon
                                   className={`${
