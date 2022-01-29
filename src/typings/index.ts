@@ -4,7 +4,6 @@ interface IDialog {
 }
 
 export interface IStats {
-  isByGrade: boolean;
   cases: { class: string; cases: { amount: number; when: string }[] }[];
 }
 

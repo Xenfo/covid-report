@@ -30,7 +30,7 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
   });
 
   const stats = useMemo(() => {
-    const stats: IStats = { isByGrade: selectedSchool.isByGrade, cases: [] };
+    const stats: IStats = { cases: [] };
     for (const { date, classroomNumber } of cases.filter(
       (c) => c.school === selectedSchool.alias
     )) {
