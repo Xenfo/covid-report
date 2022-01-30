@@ -16,7 +16,9 @@ export interface ICase {
 export interface ISchool {
   name: string;
   alias: string;
+  placeholder: string;
   classroomRegex: string;
+  type: 'normal' | 'grade' | 'room';
   min: number;
 }
 

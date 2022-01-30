@@ -9,6 +9,7 @@ import { DateTime } from 'luxon';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircular } from 'spinners-react';
+import sort from '../lib/sort';
 
 import { ICase, ISchool, IStats, IStatsDialogProps } from '../typings';
 
@@ -23,7 +24,9 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
   const [selectedSchool, setSelectedSchool] = useState<ISchool>({
     name: 'Select a school',
     alias: '',
+    placeholder: '',
     classroomRegex: '',
+    type: 'normal',
     min: 0
   });
 
@@ -76,7 +79,7 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
       }
     }
 
-    stats.cases.sort((a, b) => Number(a.class) - Number(b.class));
+    stats.cases.sort((a, b) => sort(a.class, b.class));
 
     setTotalCases(
       stats.cases
@@ -246,7 +249,17 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
                           {({ open }) => (
                             <>
                               <Disclosure.Button className="flex w-full justify-between rounded-lg bg-gray-900 px-4 py-2 text-left text-sm font-medium text-white hover:bg-gray-800">
-                                <span>{c.class}</span>
+                                <span>
+                                  {selectedSchool.type === 'normal'
+                                    ? c.class
+                                    : selectedSchool.type === 'grade'
+                                    ? c.class === 'K'
+                                      ? 'Kindergarten'
+                                      : c.class === 'Pre-K'
+                                      ? c.class
+                                      : `Grade ${c.class}`
+                                    : `Room ${c.class}`}
+                                </span>
                                 <ChevronUpIcon
                                   className={`${
                                     open ? 'rotate-180 transform' : ''

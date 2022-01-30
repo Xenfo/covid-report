@@ -25,7 +25,9 @@ const Home: NextPage = () => {
   const [selectedSchool, setSelectedSchool] = useState<ISchool>({
     name: 'Select a school',
     alias: '',
+    placeholder: '',
     classroomRegex: '',
+    type: 'normal',
     min: 0
   });
 
@@ -87,7 +89,7 @@ const Home: NextPage = () => {
                 });
               })
             }
-            onSubmit={async ({ caseIdOrRoomNumber }) => {
+            onSubmit={async ({ caseIdOrRoomNumber }, bag) => {
               setIsOpenCase(true);
 
               const pdcCase = await axios
@@ -105,7 +107,6 @@ const Home: NextPage = () => {
                   toast.error('Failed to create case');
                   return null;
                 });
-
               if (!pdcCase) return;
 
               if (pdcCase.status !== 200) {
@@ -120,6 +121,7 @@ const Home: NextPage = () => {
                 );
               }
 
+              bag.resetForm();
               return setCaseId(pdcCase.data.caseId);
             }}
           >
@@ -218,7 +220,7 @@ const Home: NextPage = () => {
                   </Listbox>
                   <Field
                     className="focus:shadow-outline mt-2 w-full appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none"
-                    placeholder="Case ID or Classroom Number"
+                    placeholder={`Case ID or ${selectedSchool.placeholder}`}
                     name="caseIdOrRoomNumber"
                     id="caseIdOrRoomNumber"
                     type="text"
