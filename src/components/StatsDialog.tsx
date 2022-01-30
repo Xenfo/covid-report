@@ -9,6 +9,7 @@ import { DateTime } from 'luxon';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircular } from 'spinners-react';
+import sort from '../lib/sort';
 
 import { ICase, ISchool, IStats, IStatsDialogProps } from '../typings';
 
@@ -78,7 +79,7 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
       }
     }
 
-    stats.cases.sort((a, b) => Number(a.class) - Number(b.class));
+    stats.cases.sort((a, b) => sort(a.class, b.class));
 
     setTotalCases(
       stats.cases
@@ -254,6 +255,8 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
                                     : selectedSchool.type === 'grade'
                                     ? c.class === 'K'
                                       ? 'Kindergarten'
+                                      : c.class === 'Pre-K'
+                                      ? c.class
                                       : `Grade ${c.class}`
                                     : `Room ${c.class}`}
                                 </span>

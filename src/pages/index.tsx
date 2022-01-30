@@ -89,7 +89,7 @@ const Home: NextPage = () => {
                 });
               })
             }
-            onSubmit={async ({ caseIdOrRoomNumber }) => {
+            onSubmit={async ({ caseIdOrRoomNumber }, bag) => {
               setIsOpenCase(true);
 
               const pdcCase = await axios
@@ -107,7 +107,6 @@ const Home: NextPage = () => {
                   toast.error('Failed to create case');
                   return null;
                 });
-
               if (!pdcCase) return;
 
               if (pdcCase.status !== 200) {
@@ -122,6 +121,7 @@ const Home: NextPage = () => {
                 );
               }
 
+              bag.resetForm();
               return setCaseId(pdcCase.data.caseId);
             }}
           >
