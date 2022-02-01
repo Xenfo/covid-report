@@ -1,3 +1,7 @@
+const merge = require('lodash.merge');
+const sortImports = require('@trivago/prettier-plugin-sort-imports');
+const tailwindcss = require('prettier-plugin-tailwindcss');
+
 module.exports = {
   semi: true,
   singleQuote: true,
@@ -13,8 +17,5 @@ module.exports = {
     'decorators-legacy'
   ],
   tailwindConfig: './tailwind.config.js',
-  plugins: [
-    require.resolve('@trivago/prettier-plugin-sort-imports'),
-    require.resolve('prettier-plugin-tailwindcss')
-  ]
+  plugins: [merge(sortImports, tailwindcss)]
 };
