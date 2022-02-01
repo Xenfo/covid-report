@@ -23,7 +23,9 @@ const Home: NextPage = () => {
   const [isOpenCase, setIsOpenCase] = useState(false);
   const [isOpenMore, setIsOpenMore] = useState(false);
   const [isOpenStats, setIsOpenStats] = useState(false);
-  const [selectedSchool, setSelectedSchool] = useState<ISchool>(schoolData[0]);
+  const [selectedSchool, setSelectedSchool] = useState<ISchool>(
+    sortSchools(schoolData)[0]
+  );
 
   useEffect(() => {
     const init = async () => {
