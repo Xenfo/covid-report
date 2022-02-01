@@ -5,11 +5,11 @@ import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircular } from 'spinners-react';
 import * as Yup from 'yup';
-import { schools } from '../lib/schools';
+import { schools as schoolData, sortSchools } from '../lib/schools';
 
 import CaseIDDialog from '../components/CaseIDDialog';
 import ReadMoreDialog from '../components/ReadMoreDialog';
@@ -17,12 +17,13 @@ import StatsDialog from '../components/StatsDialog';
 import { ISchool } from '../typings';
 
 const Home: NextPage = () => {
+  const schools = useMemo(() => sortSchools(schoolData), []);
   const [caseId, setCaseId] = useState('');
   const [visitorId, setVisitorId] = useState('');
   const [isOpenCase, setIsOpenCase] = useState(false);
   const [isOpenMore, setIsOpenMore] = useState(false);
   const [isOpenStats, setIsOpenStats] = useState(false);
-  const [selectedSchool, setSelectedSchool] = useState<ISchool>(schools[0]);
+  const [selectedSchool, setSelectedSchool] = useState<ISchool>(schoolData[0]);
 
   useEffect(() => {
     const init = async () => {
