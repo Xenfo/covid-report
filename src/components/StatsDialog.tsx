@@ -1,18 +1,15 @@
-import { Dialog, Disclosure, Listbox, Transition } from '@headlessui/react';
-import {
-  CheckIcon,
-  ChevronUpIcon,
-  SelectorIcon
-} from '@heroicons/react/outline';
+import { Dialog, Disclosure, Transition } from '@headlessui/react';
+import { ChevronUpIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { DateTime } from 'luxon';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircular } from 'spinners-react';
-import sort from '../lib/sort';
-import { schools } from '../lib/schools';
 
+import { schools as schoolData, sortSchools } from '../lib/schools';
+import sort from '../lib/sort';
 import { ICase, ISchool, IStats, IStatsDialogProps } from '../typings';
+import SchoolSelection from './SchoolSelection';
 
 const StatsDialog: React.FC<IStatsDialogProps> = ({
   isOpen,
@@ -21,7 +18,9 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
   const [cases, setCases] = useState<ICase[]>([]);
   const [totalCases, setTotalCases] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedSchool, setSelectedSchool] = useState<ISchool>(schools[0]);
+  const [selectedSchool, setSelectedSchool] = useState<ISchool>(
+    sortSchools(schoolData)[0]
+  );
 
   const stats = useMemo(() => {
     const stats: IStats = { cases: [] };
@@ -161,66 +160,10 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
               ) : (
                 <>
                   <div className="mt-4 w-full bg-white">
-                    <Listbox
-                      value={selectedSchool}
-                      onChange={setSelectedSchool}
-                    >
-                      <div className="relative mt-1">
-                        <Listbox.Button className="focus:shadow-outline relative w-full cursor-default appearance-none rounded border bg-white py-2 pl-3 pr-10 text-left shadow focus:outline-none">
-                          <span className="block truncate font-normal text-gray-700">
-                            {selectedSchool.name}
-                          </span>
-                          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                            <SelectorIcon
-                              className="h-5 w-5 text-gray-400"
-                              aria-hidden="true"
-                            />
-                          </span>
-                        </Listbox.Button>
-                        <Transition
-                          as={Fragment}
-                          leave="transition ease-in duration-100"
-                          leaveFrom="opacity-100"
-                          leaveTo="opacity-0"
-                        >
-                          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 scrollbar scrollbar-thin scrollbar-track-gray-300 scrollbar-thumb-gray-700 focus:outline-none">
-                            {schools.map((school, i) => (
-                              <Listbox.Option
-                                key={i}
-                                className={({ active }) =>
-                                  `${
-                                    active
-                                      ? 'bg-blue-100 text-blue-900'
-                                      : 'text-gray-700'
-                                  } relative cursor-default select-none py-2 pl-10 pr-4`
-                                }
-                                value={school}
-                              >
-                                {({ selected }) => (
-                                  <>
-                                    <span
-                                      className={`${
-                                        selected ? 'font-medium' : 'font-normal'
-                                      } block truncate`}
-                                    >
-                                      {school.name}
-                                    </span>
-                                    {selected ? (
-                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-600">
-                                        <CheckIcon
-                                          className="h-6 w-6"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                    ) : null}
-                                  </>
-                                )}
-                              </Listbox.Option>
-                            ))}
-                          </Listbox.Options>
-                        </Transition>
-                      </div>
-                    </Listbox>
+                    <SchoolSelection
+                      selectedSchool={selectedSchool}
+                      setSelectedSchool={setSelectedSchool}
+                    />
                     <div
                       className={`${
                         stats.cases.length > 0 ? 'mt-4' : ''

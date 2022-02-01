@@ -67,8 +67,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Res>) => {
 
         const selectedSchool = schools.find((s) => s.alias === body.school);
         if (selectedSchool) {
-          const isValid = await Yup.lazy(() => {
-            return Yup.object().shape({
+          const isValid = await Yup.lazy(() =>
+            Yup.object().shape({
               caseIdOrRoomNumber: Yup.string()
                 .required('Case ID or classroom number is required')
                 .min(
@@ -82,8 +82,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Res>) => {
                   ),
                   'Must be a valid case ID or classroom number'
                 )
-            });
-          }).isValid({ caseIdOrRoomNumber: body.caseIdOrRoomNumber });
+            })
+          ).isValid({ caseIdOrRoomNumber: body.caseIdOrRoomNumber });
 
           if (isValid) {
             if (visitor.data.visits.length) {

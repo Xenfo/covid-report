@@ -93,9 +93,9 @@ const CaseIDDialog: React.FC<ICaseIDDialogProps> = ({
                         onClick={async () => {
                           await navigator.clipboard
                             .writeText(caseId)
-                            .catch(() => {
-                              return toast.error('Failed to copy to clipboard');
-                            });
+                            .catch(() =>
+                              toast.error('Failed to copy to clipboard')
+                            );
                           toast.success('Successfully copied case ID');
                           setIsCopying(true);
                         }}

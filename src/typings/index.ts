@@ -1,10 +1,15 @@
+export interface IStats {
+  cases: { class: string; cases: { amount: number; when: string }[] }[];
+}
+
 interface IDialog {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
 
-export interface IStats {
-  cases: { class: string; cases: { amount: number; when: string }[] }[];
+export interface ISchoolSelectionProps {
+  selectedSchool: ISchool;
+  setSelectedSchool: (selectedSchool: ISchool) => void;
 }
 
 export interface ICase {
