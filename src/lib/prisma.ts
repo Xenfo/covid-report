@@ -1,5 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+declare global {
+  // eslint-disable-next-line no-var
+  var prisma: PrismaClient | undefined;
+}
 
-export default prisma;
+export const prisma = global.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL)
+  global.prisma = prisma;
