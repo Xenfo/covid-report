@@ -9,6 +9,7 @@ import { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircular } from 'spinners-react';
 import * as Yup from 'yup';
+import { schools } from '../lib/schools';
 
 import CaseIDDialog from '../components/CaseIDDialog';
 import ReadMoreDialog from '../components/ReadMoreDialog';
@@ -21,25 +22,10 @@ const Home: NextPage = () => {
   const [isOpenCase, setIsOpenCase] = useState(false);
   const [isOpenMore, setIsOpenMore] = useState(false);
   const [isOpenStats, setIsOpenStats] = useState(false);
-  const [schools, setSchools] = useState<ISchool[]>([]);
-  const [selectedSchool, setSelectedSchool] = useState<ISchool>({
-    name: 'Select a school',
-    alias: '',
-    placeholder: '',
-    classroomRegex: '',
-    type: 'normal',
-    min: 0
-  });
+  const [selectedSchool, setSelectedSchool] = useState<ISchool>(schools[0]);
 
   useEffect(() => {
     const init = async () => {
-      const schools = await axios
-        .get<ISchool[]>('/data/schools.json')
-        .then((res) => res.data);
-
-      setSchools(schools);
-      setSelectedSchool(schools[0]);
-
       await FingerprintJS.load({
         token: process.env.NEXT_PUBLIC_FINGERPRINT_KEY!,
         endpoint: 'https://fp.xenfo.dev'

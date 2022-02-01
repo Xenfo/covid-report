@@ -10,6 +10,7 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircular } from 'spinners-react';
 import sort from '../lib/sort';
+import { schools } from '../lib/schools';
 
 import { ICase, ISchool, IStats, IStatsDialogProps } from '../typings';
 
@@ -20,15 +21,7 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
   const [cases, setCases] = useState<ICase[]>([]);
   const [totalCases, setTotalCases] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [schools, setSchools] = useState<ISchool[]>([]);
-  const [selectedSchool, setSelectedSchool] = useState<ISchool>({
-    name: 'Select a school',
-    alias: '',
-    placeholder: '',
-    classroomRegex: '',
-    type: 'normal',
-    min: 0
-  });
+  const [selectedSchool, setSelectedSchool] = useState<ISchool>(schools[0]);
 
   const stats = useMemo(() => {
     const stats: IStats = { cases: [] };
@@ -103,13 +96,6 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
         });
       if (!cases) return;
       setCases(cases.data.cases);
-
-      const schools = await axios
-        .get<ISchool[]>('/data/schools.json')
-        .then((res) => res.data);
-
-      setSchools(schools);
-      setSelectedSchool(schools[0]);
 
       setIsLoading(false);
     };
