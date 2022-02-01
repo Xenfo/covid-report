@@ -107,3 +107,7 @@ export const schools: ISchool[] = [
     min: 2
   }
 ];
+
+export const sortSchools = (schools: ISchool[]) => {
+  return [...schools].sort((a, b) => a.name.localeCompare(b.name));
+};
