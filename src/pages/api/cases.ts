@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as Yup from 'yup';
 
-import prisma from '../../lib/prisma';
+import { prisma } from '../../lib/prisma';
 import { ISchool } from '../../typings';
 
 interface Res {
