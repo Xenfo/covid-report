@@ -116,7 +116,7 @@ export const sortSchools = (
     .map((s) => ({ ...s, starred: savedSchools.includes(s.alias) }))
     .sort((a, b) => a.name.localeCompare(b.name))
     .sort((a, b) => {
-      if (a.starred && b.starred) return -1;
+      if (a.starred && b.starred) return a.name.localeCompare(b.name);
       if (a.starred && !b.starred) return -1;
       if (!a.starred && b.starred) return 1;
 

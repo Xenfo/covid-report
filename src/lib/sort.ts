@@ -15,10 +15,11 @@ const createAlphabet = () => {
 const parseInput = (input: string) => {
   const alphabet = createAlphabet();
 
-  const chars = [];
-  for (const c of input) {
-    chars.push(c);
-  }
+  const chars: string[] = [];
+  for (const c of input) chars.push(c);
+
+  if (chars.length !== 3)
+    chars.push(...Array.from(Array(3 - chars.length)).map(() => '0'));
 
   return chars
     .reverse()
@@ -35,30 +36,21 @@ const parseInput = (input: string) => {
 
 const sort = (a: string, b: string) => {
   const hasLetters = [a, b].map((c) => (c.match(/[a-zA-Z]/g)?.length ?? 0) > 0);
-  if (!hasLetters.includes(true)) return Number(a) - Number(b);
+
+  if (!hasLetters.includes(true)) return parseInput(a) - parseInput(b);
 
   if (!hasLetters.includes(false)) {
     if (a.startsWith('P') && b.startsWith('K')) return -1;
     else if (a.startsWith('K') && b.startsWith('P')) return 1;
-    else if (
-      a.startsWith('K') ||
-      a.startsWith('P') ||
-      b.startsWith('K') ||
-      b.startsWith('P')
-    )
-      return -1;
+    else if (a.startsWith('P') || a.startsWith('K')) return -1;
+    else if (b.startsWith('P') || b.startsWith('K')) return 1;
 
     return parseInput(a) - parseInput(b);
   }
 
   if (hasLetters.includes(true) && hasLetters.includes(false)) {
-    if (
-      a.startsWith('K') ||
-      a.startsWith('P') ||
-      b.startsWith('K') ||
-      b.startsWith('P')
-    )
-      return 1;
+    if (a.startsWith('P') || a.startsWith('K')) return -1;
+    else if (b.startsWith('P') || b.startsWith('K')) return 1;
 
     return parseInput(a) - parseInput(b);
   }
