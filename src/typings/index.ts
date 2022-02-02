@@ -1,3 +1,9 @@
+import { ButtonHTMLAttributes } from 'react';
+
+export type ISchoolServer = Omit<ISchool, 'starred'>;
+
+export type IButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+
 export interface IStats {
   cases: { class: string; cases: { amount: number; when: string }[] }[];
 }
@@ -8,8 +14,8 @@ interface IDialog {
 }
 
 export interface ISchoolSelectionProps {
-  selectedSchool: ISchoolClient;
-  setSelectedSchool: (selectedSchool: ISchoolClient) => void;
+  selectedSchool: ISchool;
+  setSelectedSchool: (selectedSchool: ISchool) => void;
 }
 
 export interface ICase {
@@ -25,9 +31,6 @@ export interface ISchool {
   classroomRegex: string;
   type: 'normal' | 'grade' | 'room';
   min: number;
-}
-
-export interface ISchoolClient extends ISchool {
   starred: boolean;
 }
 

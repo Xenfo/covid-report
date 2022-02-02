@@ -1,10 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { ClipboardCheckIcon, ClipboardIcon } from '@heroicons/react/outline';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircular } from 'spinners-react';
 
 import { ICaseIDDialogProps } from '../typings';
+import Button from './Button';
 
 const CaseIDDialog: React.FC<ICaseIDDialogProps> = ({
   isSubmitting,
@@ -13,6 +14,7 @@ const CaseIDDialog: React.FC<ICaseIDDialogProps> = ({
   isOpen,
   setIsOpen
 }: ICaseIDDialogProps) => {
+  const titleRef = useRef(null);
   const [isCopying, setIsCopying] = useState(false);
 
   useEffect(() => {
@@ -28,6 +30,7 @@ const CaseIDDialog: React.FC<ICaseIDDialogProps> = ({
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
+        initialFocus={titleRef}
         className="fixed inset-0 z-10 overflow-y-auto"
         onClose={() => close()}
       >
@@ -64,7 +67,7 @@ const CaseIDDialog: React.FC<ICaseIDDialogProps> = ({
                 as="h3"
                 className="text-center text-lg font-medium leading-6 text-gray-900"
               >
-                Case ID
+                <p ref={titleRef}>Case ID</p>
               </Dialog.Title>
 
               {isSubmitting || caseId.length === 0 ? (
@@ -110,13 +113,9 @@ const CaseIDDialog: React.FC<ICaseIDDialogProps> = ({
                   </div>
 
                   <div className="mt-4">
-                    <button
-                      className="focus:shadow-outline w-full rounded bg-gray-900 py-2 px-4 font-bold text-white hover:bg-gray-800 focus:outline-none disabled:bg-gray-800"
-                      type="button"
-                      onClick={() => close()}
-                    >
+                    <Button type="button" onClick={() => close()}>
                       Got it, thanks!
-                    </button>
+                    </Button>
                   </div>
                 </>
               )}
