@@ -176,7 +176,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Res>) => {
 
     return await prisma.$disconnect();
   } catch (err) {
-    console.error(err);
     return res.status(500).json({ success: false });
   }
 };
