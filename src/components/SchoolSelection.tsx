@@ -60,7 +60,7 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
                 {({ selected }) => (
                   <>
                     <div className="flex flex-row">
-                      <div>
+                      <div className="max-w-[85%]">
                         <span
                           className={`${
                             selected ? 'font-medium' : 'font-normal'
