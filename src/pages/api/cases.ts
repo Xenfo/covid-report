@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import * as Yup from 'yup';
 
 import { prisma } from '../../lib/prisma';
-import { ISchool } from '../../typings';
+import { schools } from '../../lib/schools';
 
 interface Res {
   success: boolean;
@@ -53,12 +53,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Res>) => {
       if (!body.school || !body.visitorId || !body.caseIdOrRoomNumber)
         res.status(400).send({ success: false, message: 'Missing parameters' });
       else {
-        const schools = await axios
-          .get<ISchool[]>('/data/schools.json', {
-            baseURL: process.env.FRONTEND_URL
-          })
-          .then((res) => res.data);
-
         const caseId = body.caseIdOrRoomNumber.slice(1);
         const visitor = await axios.get<{ visits: string[] }>(
           `/visitors/${body.visitorId}?token=${process.env.FINGERPRINT_KEY!}`,

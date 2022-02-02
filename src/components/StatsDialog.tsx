@@ -2,23 +2,25 @@ import { Dialog, Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { DateTime } from 'luxon';
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { SpinnerCircular } from 'spinners-react';
 
 import { schools as schoolData, sortSchools } from '../lib/schools';
 import sort from '../lib/sort';
-import { ICase, ISchoolClient, IStats, IStatsDialogProps } from '../typings';
+import { ICase, ISchool, IStats, IStatsDialogProps } from '../typings';
+import Button from './Button';
 import SchoolSelection from './SchoolSelection';
 
 const StatsDialog: React.FC<IStatsDialogProps> = ({
   isOpen,
   setIsOpen
 }: IStatsDialogProps) => {
+  const titleRef = useRef(null);
   const [cases, setCases] = useState<ICase[]>([]);
   const [totalCases, setTotalCases] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedSchool, setSelectedSchool] = useState<ISchoolClient>(
+  const [selectedSchool, setSelectedSchool] = useState<ISchool>(
     sortSchools(schoolData, [])[0]
   );
 
@@ -109,6 +111,7 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
+        initialFocus={titleRef}
         className="fixed inset-0 z-10 overflow-y-auto"
         onClose={() => setIsOpen(false)}
       >
@@ -145,7 +148,10 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
                 as="h3"
                 className="text-center text-lg font-medium leading-6 text-gray-900"
               >
-                Stats - {totalCases} total {totalCases === 1 ? 'case' : 'cases'}
+                <p ref={titleRef}>
+                  Stats - {totalCases} total{' '}
+                  {totalCases === 1 ? 'case' : 'cases'}
+                </p>
               </Dialog.Title>
 
               {isLoading ? (
@@ -231,13 +237,9 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
                   </div>
 
                   <div className="mt-4">
-                    <button
-                      className="focus:shadow-outline w-full rounded bg-gray-900 py-2 px-4 font-bold text-white hover:bg-gray-800 focus:outline-none"
-                      type="button"
-                      onClick={() => setIsOpen(false)}
-                    >
+                    <Button type="button" onClick={() => setIsOpen(false)}>
                       Got it, thanks!
-                    </button>
+                    </Button>
                   </div>
                 </>
               )}

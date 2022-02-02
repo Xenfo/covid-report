@@ -2,6 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 
 import { IReadMoreDialogProps } from '../typings';
+import Button from './Button';
 
 const ReadMoreDialog: React.FC<IReadMoreDialogProps> = ({
   isOpen,
@@ -94,13 +95,9 @@ const ReadMoreDialog: React.FC<IReadMoreDialogProps> = ({
             </div>
 
             <div className="mt-4">
-              <button
-                className="focus:shadow-outline w-full rounded bg-gray-900 py-2 px-4 font-bold text-white hover:bg-gray-800 focus:outline-none disabled:bg-gray-800"
-                type="button"
-                onClick={() => setIsOpen(false)}
-              >
+              <Button type="button" onClick={() => setIsOpen(false)}>
                 Got it, thanks!
-              </button>
+              </Button>
             </div>
           </div>
         </Transition.Child>

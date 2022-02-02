@@ -8,12 +8,13 @@ import toast from 'react-hot-toast';
 import { SpinnerCircular } from 'spinners-react';
 import * as Yup from 'yup';
 
+import Button from '../components/Button';
 import CaseIDDialog from '../components/CaseIDDialog';
 import ReadMoreDialog from '../components/ReadMoreDialog';
 import SchoolSelection from '../components/SchoolSelection';
 import StatsDialog from '../components/StatsDialog';
 import { schools as schoolData, sortSchools } from '../lib/schools';
-import { ISchoolClient } from '../typings';
+import { ISchool } from '../typings';
 
 const Home: NextPage = () => {
   const [caseId, setCaseId] = useState('');
@@ -21,7 +22,7 @@ const Home: NextPage = () => {
   const [isOpenCase, setIsOpenCase] = useState(false);
   const [isOpenMore, setIsOpenMore] = useState(false);
   const [isOpenStats, setIsOpenStats] = useState(false);
-  const [selectedSchool, setSelectedSchool] = useState<ISchoolClient>(
+  const [selectedSchool, setSelectedSchool] = useState<ISchool>(
     sortSchools(schoolData, [])[0]
   );
 
@@ -165,11 +166,7 @@ const Home: NextPage = () => {
                     </p>
                   ) : null}
                   <div className="mt-3 flex w-full flex-col items-center space-y-1">
-                    <button
-                      className="focus:shadow-outline w-full rounded bg-gray-900 py-2 px-4 font-bold text-white hover:bg-gray-800 focus:outline-none disabled:bg-gray-800"
-                      type="submit"
-                      disabled={isSubmitting}
-                    >
+                    <Button type="submit" disabled={isSubmitting}>
                       {isSubmitting ? (
                         <div className="flex flex-row justify-center">
                           <div className="mr-1 inline-flex items-center">
@@ -186,14 +183,10 @@ const Home: NextPage = () => {
                       ) : (
                         'Submit'
                       )}
-                    </button>
-                    <button
-                      className="focus:shadow-outline w-full rounded bg-gray-900 py-2 px-4 font-bold text-white hover:bg-gray-800 focus:outline-none"
-                      type="button"
-                      onClick={() => setIsOpenStats(true)}
-                    >
+                    </Button>
+                    <Button type="button" onClick={() => setIsOpenStats(true)}>
                       Stats
-                    </button>
+                    </Button>
                   </div>
                   <div className="text-center">
                     <p className="mt-1 text-gray-700 md:mt-2">

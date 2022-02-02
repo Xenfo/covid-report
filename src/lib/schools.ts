@@ -1,6 +1,6 @@
-import { ISchool, ISchoolClient } from '../typings';
+import { ISchool, ISchoolServer } from '../typings';
 
-export const schools: ISchool[] = [
+export const schools: ISchoolServer[] = [
   {
     alias: 'PDC',
     name: 'Pierre de Coubertin Elementary School',
@@ -109,9 +109,9 @@ export const schools: ISchool[] = [
 ];
 
 export const sortSchools = (
-  schools: ISchool[],
+  schools: ISchoolServer[],
   savedSchools: string[]
-): ISchoolClient[] =>
+): ISchool[] =>
   [...schools]
     .map((s) => ({ ...s, starred: savedSchools.includes(s.alias) }))
     .sort((a, b) => a.name.localeCompare(b.name))
