@@ -1,15 +1,30 @@
 import { Listbox, Transition } from '@headlessui/react';
-import { CheckIcon, SelectorIcon } from '@heroicons/react/outline';
+import {
+  CheckIcon,
+  SelectorIcon,
+  StarIcon as StarIconOutline
+} from '@heroicons/react/outline';
+import { StarIcon as StarIconSolid } from '@heroicons/react/solid';
+import { useAtom } from 'jotai';
 import { Fragment, useMemo } from 'react';
 
 import { schools as schoolData, sortSchools } from '../lib/schools';
+import { starredSchoolsAtom } from '../stores';
 import { ISchoolSelectionProps } from '../typings';
 
 const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
   selectedSchool,
   setSelectedSchool
 }: ISchoolSelectionProps) => {
-  const schools = useMemo(() => sortSchools(schoolData), []);
+  const [starredSchools, setStarredSchools] = useAtom(starredSchoolsAtom);
+  const schools = useMemo(() => {
+    const sorted = sortSchools(
+      schoolData,
+      (starredSchools as string[] | undefined) ?? []
+    );
+    setSelectedSchool(sorted[0]);
+    return sorted;
+  }, [starredSchools, setSelectedSchool]);
 
   return (
     <Listbox value={selectedSchool} onChange={setSelectedSchool}>
@@ -44,18 +59,46 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
               >
                 {({ selected }) => (
                   <>
-                    <span
-                      className={`${
-                        selected ? 'font-medium' : 'font-normal'
-                      } block truncate`}
-                    >
-                      {school.name}
-                    </span>
-                    {selected ? (
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-600">
-                        <CheckIcon className="h-6 w-6" aria-hidden="true" />
+                    <div className="flex flex-row">
+                      <div>
+                        <span
+                          className={`${
+                            selected ? 'font-medium' : 'font-normal'
+                          } block truncate`}
+                        >
+                          {school.name}
+                        </span>
+                        {selected ? (
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-blue-600">
+                            <CheckIcon className="h-6 w-6" aria-hidden="true" />
+                          </span>
+                        ) : null}
+                      </div>
+                      <span className="flex w-full items-center justify-end text-yellow-300">
+                        {starredSchools.includes(school.alias) ? (
+                          <StarIconSolid
+                            className="h-6 w-6"
+                            aria-hidden="true"
+                            onClick={() =>
+                              setStarredSchools(() =>
+                                starredSchools.filter((s) => s !== school.alias)
+                              )
+                            }
+                          />
+                        ) : (
+                          <StarIconOutline
+                            className="h-6 w-6"
+                            aria-hidden="true"
+                            onClick={() =>
+                              setStarredSchools([
+                                ...starredSchools,
+                                school.alias
+                              ])
+                            }
+                          />
+                        )}
                       </span>
-                    ) : null}
+                    </div>
                   </>
                 )}
               </Listbox.Option>

@@ -13,7 +13,7 @@ import ReadMoreDialog from '../components/ReadMoreDialog';
 import SchoolSelection from '../components/SchoolSelection';
 import StatsDialog from '../components/StatsDialog';
 import { schools as schoolData, sortSchools } from '../lib/schools';
-import { ISchool } from '../typings';
+import { ISchoolClient } from '../typings';
 
 const Home: NextPage = () => {
   const [caseId, setCaseId] = useState('');
@@ -21,8 +21,8 @@ const Home: NextPage = () => {
   const [isOpenCase, setIsOpenCase] = useState(false);
   const [isOpenMore, setIsOpenMore] = useState(false);
   const [isOpenStats, setIsOpenStats] = useState(false);
-  const [selectedSchool, setSelectedSchool] = useState<ISchool>(
-    sortSchools(schoolData)[0]
+  const [selectedSchool, setSelectedSchool] = useState<ISchoolClient>(
+    sortSchools(schoolData, [])[0]
   );
 
   useEffect(() => {

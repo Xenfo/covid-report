@@ -8,7 +8,7 @@ import { SpinnerCircular } from 'spinners-react';
 
 import { schools as schoolData, sortSchools } from '../lib/schools';
 import sort from '../lib/sort';
-import { ICase, ISchool, IStats, IStatsDialogProps } from '../typings';
+import { ICase, ISchoolClient, IStats, IStatsDialogProps } from '../typings';
 import SchoolSelection from './SchoolSelection';
 
 const StatsDialog: React.FC<IStatsDialogProps> = ({
@@ -18,8 +18,8 @@ const StatsDialog: React.FC<IStatsDialogProps> = ({
   const [cases, setCases] = useState<ICase[]>([]);
   const [totalCases, setTotalCases] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedSchool, setSelectedSchool] = useState<ISchool>(
-    sortSchools(schoolData)[0]
+  const [selectedSchool, setSelectedSchool] = useState<ISchoolClient>(
+    sortSchools(schoolData, [])[0]
   );
 
   const stats = useMemo(() => {
