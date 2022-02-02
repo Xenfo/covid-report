@@ -1,4 +1,4 @@
-import { ISchool } from '../typings';
+import { ISchool, ISchoolClient } from '../typings';
 
 export const schools: ISchool[] = [
   {
@@ -108,5 +108,17 @@ export const schools: ISchool[] = [
   }
 ];
 
-export const sortSchools = (schools: ISchool[]) =>
-  [...schools].sort((a, b) => a.name.localeCompare(b.name));
+export const sortSchools = (
+  schools: ISchool[],
+  savedSchools: string[]
+): ISchoolClient[] =>
+  [...schools]
+    .map((s) => ({ ...s, starred: savedSchools.includes(s.alias) }))
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .sort((a, b) => {
+      if (a.starred && b.starred) return -1;
+      if (a.starred && !b.starred) return -1;
+      if (!a.starred && b.starred) return 1;
+
+      return 0;
+    });

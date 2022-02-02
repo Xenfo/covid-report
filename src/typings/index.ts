@@ -8,8 +8,8 @@ interface IDialog {
 }
 
 export interface ISchoolSelectionProps {
-  selectedSchool: ISchool;
-  setSelectedSchool: (selectedSchool: ISchool) => void;
+  selectedSchool: ISchoolClient;
+  setSelectedSchool: (selectedSchool: ISchoolClient) => void;
 }
 
 export interface ICase {
@@ -25,6 +25,10 @@ export interface ISchool {
   classroomRegex: string;
   type: 'normal' | 'grade' | 'room';
   min: number;
+}
+
+export interface ISchoolClient extends ISchool {
+  starred: boolean;
 }
 
 export interface IReadMoreDialogProps extends IDialog {}
