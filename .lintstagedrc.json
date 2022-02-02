@@ -1,4 +1,4 @@
 {
-  "*.{ts,tsx}": "echo next lint --fix --ignore-path .gitignore",
+  "*.{ts,tsx}": "next lint --fix --ignore-path .gitignore",
   "*.{js,json}": "prettier -w --ignore-path .gitignore"
 }
