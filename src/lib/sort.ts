@@ -33,6 +33,8 @@ const parseInput = (input: string) => {
     .reduce((a, b) => a + b, 0);
 };
 
+const normalize = (output: number) => Math.sign(output);
+
 const sort = (a: string, b: string) => {
   const hasLetters = [a, b].map((c) => (c.match(/[a-zA-Z]/g)?.length ?? 0) > 0);
   if (!hasLetters.includes(true)) return Number(a) - Number(b);
@@ -40,15 +42,10 @@ const sort = (a: string, b: string) => {
   if (!hasLetters.includes(false)) {
     if (a.startsWith('P') && b.startsWith('K')) return -1;
     else if (a.startsWith('K') && b.startsWith('P')) return 1;
-    else if (
-      a.startsWith('K') ||
-      a.startsWith('P') ||
-      b.startsWith('K') ||
-      b.startsWith('P')
-    )
-      return -1;
+    else if (a.startsWith('P') || a.startsWith('K')) return -1;
+    else if (b.startsWith('P') || b.startsWith('K')) return 1;
 
-    return parseInput(a) - parseInput(b);
+    return normalize(parseInput(a) - parseInput(b));
   }
 
   if (hasLetters.includes(true) && hasLetters.includes(false)) {
@@ -60,7 +57,7 @@ const sort = (a: string, b: string) => {
     )
       return 1;
 
-    return parseInput(a) - parseInput(b);
+    return normalize(parseInput(a) - parseInput(b));
   }
 
   return 0;

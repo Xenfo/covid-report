@@ -6,7 +6,7 @@ import {
 } from '@heroicons/react/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
-import { Fragment, useMemo } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import { schools as schoolData, sortSchools } from '../lib/schools';
 import { starredSchoolsAtom } from '../stores';
@@ -17,13 +17,15 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
   setSelectedSchool
 }: ISchoolSelectionProps) => {
   const [starredSchools, setStarredSchools] = useAtom(starredSchoolsAtom);
-  const schools = useMemo(() => {
+  const [schools, setSchools] = useState(sortSchools(schoolData, []));
+
+  useEffect(() => {
     const sorted = sortSchools(
       schoolData,
       (starredSchools as string[] | undefined) ?? []
     );
     setSelectedSchool(sorted[0]);
-    return sorted;
+    setSchools(sorted);
   }, [starredSchools, setSelectedSchool]);
 
   return (
