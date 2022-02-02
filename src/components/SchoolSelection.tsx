@@ -74,7 +74,7 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
                           </span>
                         ) : null}
                       </div>
-                      <span className="flex w-full items-center justify-end text-yellow-300">
+                      <span className="flex w-full items-center justify-end text-yellow-400">
                         {starredSchools.includes(school.alias) ? (
                           <StarIconSolid
                             className="h-6 w-6"
