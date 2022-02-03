@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 
 import { schools as schoolData, sortSchools } from '../lib/schools';
 import { starredSchoolsAtom } from '../stores';
@@ -17,8 +17,16 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
   selectedSchool,
   setSelectedSchool
 }: ISchoolSelectionProps) => {
+  const [query, setQuery] = useState('');
   const [starredSchools, setStarredSchools] = useAtom(starredSchoolsAtom);
   const [schools, setSchools] = useState(sortSchools(schoolData, []));
+  const filteredSchools = useMemo(
+    () =>
+      schools.filter((s) =>
+        s.name.toLowerCase().startsWith(query.toLowerCase())
+      ),
+    [query, schools]
+  );
 
   useEffect(() => {
     const sorted = sortSchools(
@@ -61,10 +69,11 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
                 className="focus:shadow-outline w-full appearance-none rounded border py-2 px-3 pl-10 leading-tight text-gray-700 shadow focus:outline-none"
                 placeholder="Search..."
                 type="search"
-                onChange={(e) => console.log(e.target.value)}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
               />
             </div>
-            {schools.map((school, i) => (
+            {filteredSchools.map((school, i) => (
               <Listbox.Option
                 key={i}
                 className={({ active }) =>
