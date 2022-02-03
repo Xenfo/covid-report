@@ -18,6 +18,7 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
   setSelectedSchool
 }: ISchoolSelectionProps) => {
   const [query, setQuery] = useState('');
+  const [isOpen, _setIsOpen] = useState(false);
   const [starredSchools, setStarredSchools] = useAtom(starredSchoolsAtom);
   const [schools, setSchools] = useState(sortSchools(schoolData, []));
   const filteredSchools = useMemo(
@@ -27,6 +28,8 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
       ),
     [query, schools]
   );
+
+  useEffect(() => setQuery(''), [isOpen]);
 
   useEffect(() => {
     const sorted = sortSchools(
@@ -61,7 +64,7 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
             <div className="relative mx-2 mt-1 mb-2">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                 <SearchIcon
-                  className="h-5 w-5 text-gray-400"
+                  className="h-5 w-5 text-gray-700"
                   aria-hidden="true"
                 />
               </span>
@@ -129,6 +132,19 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
                 )}
               </Listbox.Option>
             ))}
+            {filteredSchools.length === 0 && (
+              <Listbox.Option
+                className="relative cursor-default select-none py-2 pl-10 pr-4 text-gray-700"
+                value={null}
+                disabled
+              >
+                <div className="flex flex-row">
+                  <span className="block truncate font-normal">
+                    No schools found
+                  </span>
+                </div>
+              </Listbox.Option>
+            )}
           </Listbox.Options>
         </Transition>
       </div>
