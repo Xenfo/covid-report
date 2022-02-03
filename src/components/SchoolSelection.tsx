@@ -1,12 +1,13 @@
 import { Listbox, Transition } from '@headlessui/react';
 import {
   CheckIcon,
+  SearchIcon,
   SelectorIcon,
   StarIcon as StarIconOutline
 } from '@heroicons/react/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/solid';
 import { useAtom } from 'jotai';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 
 import { schools as schoolData, sortSchools } from '../lib/schools';
 import { starredSchoolsAtom } from '../stores';
@@ -16,8 +17,19 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
   selectedSchool,
   setSelectedSchool
 }: ISchoolSelectionProps) => {
+  const [query, setQuery] = useState('');
+  const [isOpen, _setIsOpen] = useState(false);
   const [starredSchools, setStarredSchools] = useAtom(starredSchoolsAtom);
   const [schools, setSchools] = useState(sortSchools(schoolData, []));
+  const filteredSchools = useMemo(
+    () =>
+      schools.filter((s) =>
+        s.name.toLowerCase().startsWith(query.toLowerCase())
+      ),
+    [query, schools]
+  );
+
+  useEffect(() => setQuery(''), [isOpen]);
 
   useEffect(() => {
     const sorted = sortSchools(
@@ -49,7 +61,22 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
           leaveTo="opacity-0"
         >
           <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 scrollbar scrollbar-thin scrollbar-track-gray-300 scrollbar-thumb-gray-700 focus:outline-none">
-            {schools.map((school, i) => (
+            <div className="relative mx-2 mt-1 mb-2">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <SearchIcon
+                  className="h-5 w-5 text-gray-700"
+                  aria-hidden="true"
+                />
+              </span>
+              <input
+                className="focus:shadow-outline w-full appearance-none rounded border py-2 px-3 pl-10 leading-tight text-gray-700 shadow focus:outline-none"
+                placeholder="Search..."
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </div>
+            {filteredSchools.map((school, i) => (
               <Listbox.Option
                 key={i}
                 className={({ active }) =>
@@ -105,6 +132,19 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
                 )}
               </Listbox.Option>
             ))}
+            {filteredSchools.length === 0 && (
+              <Listbox.Option
+                className="relative cursor-default select-none py-2 pl-10 pr-4 text-gray-700"
+                value={null}
+                disabled
+              >
+                <div className="flex flex-row">
+                  <span className="block truncate font-normal">
+                    No schools found
+                  </span>
+                </div>
+              </Listbox.Option>
+            )}
           </Listbox.Options>
         </Transition>
       </div>
