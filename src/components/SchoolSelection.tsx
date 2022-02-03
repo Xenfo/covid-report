@@ -1,6 +1,7 @@
 import { Listbox, Transition } from '@headlessui/react';
 import {
   CheckIcon,
+  SearchIcon,
   SelectorIcon,
   StarIcon as StarIconOutline
 } from '@heroicons/react/outline';
@@ -49,6 +50,20 @@ const SchoolSelection: React.FC<ISchoolSelectionProps> = ({
           leaveTo="opacity-0"
         >
           <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 scrollbar scrollbar-thin scrollbar-track-gray-300 scrollbar-thumb-gray-700 focus:outline-none">
+            <div className="relative mx-2 mt-1 mb-2">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <SearchIcon
+                  className="h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              </span>
+              <input
+                className="focus:shadow-outline w-full appearance-none rounded border py-2 px-3 pl-10 leading-tight text-gray-700 shadow focus:outline-none"
+                placeholder="Search..."
+                type="search"
+                onChange={(e) => console.log(e.target.value)}
+              />
+            </div>
             {schools.map((school, i) => (
               <Listbox.Option
                 key={i}
