@@ -14,7 +14,7 @@
     "@headlessui/react": "^1.4.3",
     "@heroicons/react": "^1.0.5",
     "@prisma/client": "^3.9.0",
-    "axios": "^0.25.0",
+    "axios": "^0.26.0",
     "formik": "^2.2.9",
     "jotai": "^1.5.3",
     "luxon": "^2.3.0",
